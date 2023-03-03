@@ -6,6 +6,94 @@
 
 -- Q1. [create table statements here]
 
+CREATE TABLE a_brand (
+	brand_name varchar(100) PRIMARY KEY, 
+	country varchar(100)
+);
+
+CREATE TABLE a_product (
+	product_name varchar(100),
+	brand varchar(100) REFERENCES a_brand(brand_name) ON DELETE SET NULL,
+	department varchar(100),
+	category varchar(100),
+	subcategory varchar(200),
+	product_id serial PRIMARY KEY
+);
+
+CREATE TABLE a_product_tags (
+	product_id int REFERENCES a_product(product_id) ON DELETE CASCADE ON UPDATE CASCADE,
+	tag varchar(100),
+	PRIMARY KEY (product_id, tag)
+);
+
+CREATE TABLE a_customer (
+	customer_id serial PRIMARY KEY,
+	phone_number varchar(100),
+	first_name varchar(100),
+	last_name varchar(100),
+	email varchar(50),
+	address varchar(200),
+	is_member boolean
+);
+
+CREATE TABLE a_location (
+	street_address varchar(200),
+	city varchar(100),
+	state_province varchar(100),
+	country varchar(100),
+	still_open boolean,
+	location_id serial PRIMARY KEY
+);
+
+CREATE TABLE a_transaction (
+	transcation_id serial PRIMARY KEY,
+	customer int REFERENCES a_customer(customer_id) ON DELETE SET DEFAULT,
+	location int REFERENCES a_location(location_id) ON DELETE RESTRICT,
+	date_time timestamp
+);
+
+ALTER TABLE a_transaction ALTER COLUMN customer SET DEFAULT 0;
+
+CREATE TABLE a_purchase (
+	transaction_id int REFERENCES a_transaction (transcation_id) ON DELETE CASCADE,
+	product_id INT REFERENCES a_product(product_id) ON DELETE RESTRICT,
+	price decimal,
+	size varchar(100),
+	quantity smallint,
+	PRIMARY KEY (transaction_id, product_id)
+);
+
+CREATE TABLE a_employee (
+	first_name varchar(100),
+	last_name varchar(100),
+	salary int,
+	date_joined date,
+	employee_id serial PRIMARY KEY
+);
+
+CREATE TABLE a_works_at (
+	employee_id int REFERENCES a_employee(employee_id) ON DELETE CASCADE ON UPDATE CASCADE,
+	position varchar(200),
+	location int REFERENCES a_location(location_id) ON DELETE CASCADE ON UPDATE CASCADE,
+	PRIMARY KEY (employee_id, position, location)
+);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 -- Q2. 10 SQL Statements
 -- 1. In 2022, what were the top 10 products that were purchased the most often?
 SELECT p.product_id, r.product_name, COUNT(product_id)
@@ -17,37 +105,37 @@ GROUP BY p.product_id, r.product_name,
 ORDER BY COUNT(product_id) DESC,
 LIMIT 10;
 
--- 2. Which store location has the highest average number of transactions per month? 
+-- 2. Which location has the highest average number of transactions per month? 
 WITH all_transactions_per_month AS (
-	SELECT t.store, EXTRACT('month' FROM t.date_time), EXTRACT('year' FROM t.date_time), COUNT(*) 
+	SELECT t.location, EXTRACT('month' FROM t.date_time), EXTRACT('year' FROM t.date_time), COUNT(*) 
 	FROM a_transaction t
-	GROUP BY t.store, EXTRACT('month' FROM t.date_time), EXTRACT('year' FROM t.date_time)
+	GROUP BY t.location, EXTRACT('month' FROM t.date_time), EXTRACT('year' FROM t.date_time)
 ),
 average_transactions_per_month AS (
-	SELECT a.store, AVG(a.count)
+	SELECT a.location, AVG(a.count)
 	FROM all_transactions_per_month a
-	GROUP BY a.store
+	GROUP BY a.location
 ),
-SELECT s.store_id, s.address, s.city, s.state, s.country, v.avg AS avg_transactions_per_month
+SELECT s.location_id, s.address, s.city, s.state, s.country, v.avg AS avg_transactions_per_month
 FROM average_transactions_per_month v
-JOIN a_store s on avg.store = s.store_id
+JOIN a_location s on avg.location = s.location_id
 WHERE v.avg = MAX(v.avg);
 
 -- 3.What are the top 10 store locations that made the greatest year-on-year improvement in revenue from 2021 to 2022? 
 WITH transaction_totals AS (
-	SELECT x.transaction_id, x.store, SUM(p.price * p.quantity) AS total_cost
+	SELECT x.transaction_id, x.location, SUM(p.price * p.quantity) AS total_cost
 	FROM a_purchase p
 	JOIN a_transaction x on p.transaction_id = x.transaction_id
-	GROUP BY x.transaction_id, x.store
+	GROUP BY x.transaction_id, x.location
 ),
-store_rev_2021 AS (
-	SELECT t.store, SUM(t.total_cost) AS yearly_rev
+location_rev_2021 AS (
+	SELECT t.location, SUM(t.total_cost) AS yearly_rev
 	FROM transaction_totals t
 	WHERE EXTRACT('year' FROM t.date_time) = 2021
-	GROUP BY t.store
+	GROUP BY t.location
 ),
-store_rev_2022 AS (
-	SELECT t.store, SUM(t.total_cost) AS yearly_rev
+location_rev_2022 AS (
+	SELECT t.location, SUM(t.total_cost) AS yearly_rev
 	FROM transaction_totals t
 	WHERE EXTRACT('year' FROM t.date_time) = 2022
 	GROUP BY t.store
