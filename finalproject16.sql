@@ -45,6 +45,7 @@ CREATE TABLE a_customer (
 );
 
 CREATE TABLE a_location (
+	type varchar(200),
 	street_address varchar(200),
 	city varchar(100),
 	state_province varchar(100),
@@ -85,6 +86,7 @@ CREATE TABLE a_works_at (
 	location int REFERENCES a_location(location_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (employee_id, position, location)
 );
+
 
 
 
