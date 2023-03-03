@@ -11,10 +11,15 @@ CREATE TABLE a_brand (
 	country varchar(100)
 );
 
+CREATE TABLE a_department (
+	department varchar(200) PRIMARY KEY
+)
+
+drop table a_product;
 CREATE TABLE a_product (
 	product_name varchar(100),
 	brand varchar(100) REFERENCES a_brand(brand_name) ON DELETE SET NULL,
-	department varchar(100),
+	department varchar(100) REFERENCES a_department(department) ON DELETE RESTRICT,
 	category varchar(100),
 	subcategory varchar(200),
 	product_id serial PRIMARY KEY
@@ -27,13 +32,16 @@ CREATE TABLE a_product_tags (
 );
 
 CREATE TABLE a_customer (
-	customer_id serial PRIMARY KEY,
 	phone_number varchar(100),
 	first_name varchar(100),
 	last_name varchar(100),
 	email varchar(50),
-	address varchar(200),
-	is_member boolean
+	street_address varchar(200),
+	city varchar(200),
+	state_province varchar(200),
+	country varchar(200),
+	postal_code int,
+	customer_id serial PRIMARY KEY
 );
 
 CREATE TABLE a_location (
@@ -77,17 +85,6 @@ CREATE TABLE a_works_at (
 	location int REFERENCES a_location(location_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (employee_id, position, location)
 );
-
-
-
-
-
-
-
-
-
-
-
 
 
 
