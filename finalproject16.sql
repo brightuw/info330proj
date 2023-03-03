@@ -115,18 +115,23 @@ average_transactions_per_month AS (
 	SELECT a.location, AVG(a.count)
 	FROM all_transactions_per_month a
 	GROUP BY a.location
+),
+location_max_avg AS (
+	SELECT *
+	FROM average_transactions_per_month a
+	WHERE avg = (SELECT MAX(avg) FROM average_transactions_per_month)
 )
-SELECT s.location_id, s.address, s.city, s.state, s.country, v.avg AS avg_transactions_per_month
-FROM average_transactions_per_month v
-JOIN a_location s on avg.location = s.location_id
-WHERE v.avg = MAX(v.avg);
+SELECT l.location_id, l.street_address, l.city, l.state_province, l.country, m.avg AS avg_transactions_per_month
+FROM location_max_avg m
+JOIN a_location l on m.location = l.location_id
+GROUP BY l.location_id, l.street_address, l.city, l.state_province, l.country, m.avg;
 
 -- 3.What are the top 10 store locations that made the greatest year-on-year improvement in revenue from 2021 to 2022? 
 WITH transaction_totals AS (
-	SELECT x.transaction_id, x.location, SUM(p.price * p.quantity) AS total_cost
+	SELECT x.transaction_id, x.location, x.date_time, SUM(p.price * p.quantity) AS total_cost
 	FROM a_purchase p
 	JOIN a_transaction x on p.transaction_id = x.transaction_id
-	GROUP BY x.transaction_id, x.location
+	GROUP BY x.transaction_id, x.location, x.date_time
 ),
 location_rev_2021 AS (
 	SELECT t.location, SUM(t.total_cost) AS yearly_rev
@@ -140,9 +145,10 @@ location_rev_2022 AS (
 	WHERE EXTRACT('year' FROM t.date_time) = 2022
 	GROUP BY t.location
 )
-SELECT s.location_id, s.address, s.city, s.state, s.country, r1.yearly_rev AS rev_2021, r2.yearly_rev AS rev_2022, r2.yearly_rev - r1.yearly_rev AS change_in_rev
+SELECT l.location_id, l.street_address, l.city, l.state_province, l.country, r1.yearly_rev AS rev_2021, r2.yearly_rev AS rev_2022, r2.yearly_rev - r1.yearly_rev AS change_in_rev
 FROM location_rev_2021 r1
 JOIN location_rev_2022 r2 on r1.location = r2.location 
-JOIN a_location s on r1.location = s.location_id 
+JOIN a_location l on r1.location = l.location_id 
 ORDER BY r2.yearly_rev - r1.yearly_rev DESC
 LIMIT 10;
+
