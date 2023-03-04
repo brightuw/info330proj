@@ -15,7 +15,6 @@ CREATE TABLE a_department (
 	department varchar(200) PRIMARY KEY
 )
 
-drop table a_product;
 CREATE TABLE a_product (
 	product_name varchar(100),
 	brand varchar(100) REFERENCES a_brand(brand_name) ON DELETE SET NULL,
