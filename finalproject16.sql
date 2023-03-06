@@ -12,7 +12,7 @@ CREATE TABLE a_brand (
 
 CREATE TABLE a_department (
 	department varchar(200) PRIMARY KEY
-)
+);
 
 CREATE TABLE a_product (
 	product_name varchar(100),
