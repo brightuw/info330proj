@@ -166,12 +166,12 @@ where l.type = 'Store' and e.date_joined < '2022-03-01';
 
 -- 6. Banana Republic plans to increase their production and wants to find out which department is 
 -- making the most amount in sales. Rank all departments by the total revenue.
-select p.department, sum(r.price) as "Revenue"
+select p.department, sum(r.price * r.quantity) as "Revenue"
 from a_product p 
 join a_purchase r on p.product_id = r.product_id
 where p.brand = 'Banana Republic'
 group by p.department
-order by sum(r.price) desc;
+order by "Revenue" desc;
 
 
 -- Q3. Demo Queries with Results:
