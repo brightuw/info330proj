@@ -93,6 +93,7 @@ CREATE TABLE a_works_at (
 
 
 
+
 -- Q2. 10 SQL Statements
 -- 1. In 2022, what were the top 10 products that were purchased the most often?
 SELECT p.product_id, r.product_name, COUNT(p.product_id)
@@ -150,4 +151,35 @@ JOIN location_rev_2022 r2 on r1.location = r2.location
 JOIN a_location l on r1.location = l.location_id 
 ORDER BY r2.yearly_rev - r1.yearly_rev DESC
 LIMIT 10;
+
+
+-- 4. Customor searching for womens clothes under $50, from least expensive to most.
+select p.product_name as "Item name", p.brand as "Brand", r.price as Price, l.street_address as "Store", l.city as "City"
+from a_product p
+join a_purchase r on p.product_id = r.product_id
+join a_transaction t on r.transaction_id = t.transaction_id
+join a_location l on t.location = l.location_id
+where p.department = 'Womens' and r.price < 50
+order by r.price;
+
+
+-- 5. According to company policy, all "store" employees that have been employed for over a year
+-- are obligated a raise. Find these employees names, position, ID #, and current salary.
+select e.first_name, e.last_name, e.employee_id, w.position, e.salary
+from a_employee e
+join a_works_at w on e.employee_id = w.employee_id
+join a_location l on w.location = l.location_id
+where l.type = 'Store' and e.date_joined < '2022-03-01';
+
+-- 6. Banana Republic plans to increase their production and wants to find out which department is 
+-- making the most amount in sales. Rank all departments by the total revenue.
+select p.department, sum(r.price) as "Revenue"
+from a_product p 
+join a_purchase r on p.product_id = r.product_id
+where p.brand = 'Banana Republic'
+group by p.department
+order by sum(r.price) desc;
+
+
+
 
