@@ -202,6 +202,14 @@ where p.brand = 'Banana Republic'
 group by p.department
 order by "Revenue" desc;
 
+-- Results:
+
+-- Department Revenue:
+
+-- "Womens"	  82.97
+-- "Kids"	  78.97
+-- "Mens"	  67.98
+
 -- 2. To get an insight on the popularity of all products sold, what were the top 10 most-purchased
 -- 	  items in 2022? (repeat)
 select p.product_id, r.product_name, count(p.product_id) as num_purchases
@@ -212,6 +220,21 @@ where extract('year' from t.date_time) = 2022
 group by p.product_id, r.product_name 
 order by count(p.product_id) desc
 limit 10;
+
+-- Results
+
+-- product_id   product_name                    num_purchases
+
+-- 16	        "Color Blossom BB Star Pendant"	            2
+-- 9	        "Solid Ruffle Trim Belted Wrap Dress"	    2
+-- 1	        "Tee Shirt"	                                2
+-- 6	        "Court Classics"	                        1
+-- 10	        "EMERY ROSE Solid Ruffle Hem Smock Dress"	1
+-- 11	        "Waffle Knit Draped Dress"	                1
+-- 12	        "BIC Earrings"	                            1
+-- 13	        "Tina Shoes"		        	            1
+-- 14	        "Stylish Head Scarf"		                1
+-- 18	        "Essential Fleece Joggers"		            1
 
 -- 3. What were the top 5 store locations that made the greatest year-on-year improvement 
 --    in revenue from 2021 to 2022? (repeat)
@@ -242,6 +265,14 @@ where l.type = 'Store'
 order by r2.yearly_rev - r1.yearly_rev desc
 limit 5;
 
+-- Results
+
+-- location_id, street_address, city, state_province, country, rev_2021, rev_2022, change_in_rev
+
+-- 9	"1111 Robson St"	"Vancouver"	"BC"	"CA"	2900	5840	2940
+-- 11	"2855 Stevens Creek Blvd"	"Santa Clara"	"CA"	"USA"	925.98	3084.96	2158.98
+-- 1	"7171 Belred Rd"	"Bellevue"	"WA"	"USA"	74.99	952.95	877.96
+
 -- 4. Customer searching for womens items under $50 and sorting from least to most expensive. (repeat)
 select p.product_name as "Item name", p.brand as "Brand", r.price as Price, l.street_address as "Store", l.city as "City"
 from a_product p
@@ -250,3 +281,18 @@ join a_transaction t on r.transaction_id = t.transaction_id
 join a_location l on t.location = l.location_id
 where p.department = 'Womens' and r.price < 50
 order by r.price;
+
+-- Results:
+
+-- item name, brand, price, store, city
+
+-- "BIC Earrings"	"Banana Republic"	3.99	"520 Washington St"	"New York"
+-- "Solid Ruffle Trim Belted Wrap Dress"	"Shein"	15.99	"112 Martin Luther King Jr Way"	"Houston"
+-- "Solid Ruffle Trim Belted Wrap Dress"	"Shein"	15.99	"520 Washington St"	"New York"
+-- "EMERY ROSE Solid Ruffle Hem Smock Dress"	"Shein"	17.99	"520 Washington St"	"New York"
+-- "Waffle Knit Draped Dress"	"Shein"	23.99	"520 Washington St"	"New York"
+-- "V-Neck Sweater"	"GAP"	24.99	"2855 Stevens Creek Blvd"	"Santa Clara"
+-- "Essential Fleece Joggers"	"Adidas"	29.99	"2855 Stevens Creek Blvd"	"Santa Clara"
+-- "Stylish Head Scarf"	"Burberry"	37.99	"2855 Stevens Creek Blvd"	"Santa Clara"
+-- "Stylish Head Scarf"	"Burberry"	42.99	"Online"	
+-- "Tina Shoes"	"Chanel"	44.99	"7171 Belred Rd"	"Bellevue"
