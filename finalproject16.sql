@@ -143,6 +143,7 @@ from location_rev_2021 r1
 join location_rev_2022 r2 on r1.location = r2.location 
 join a_location l on r1.location = l.location_id 
 where l.type = 'Store'
+	and (r2.yearly_rev - r1.yearly_rev) > 0
 order by r2.yearly_rev - r1.yearly_rev desc
 limit 10;
 
@@ -220,6 +221,7 @@ from location_rev_2021 r1
 join location_rev_2022 r2 on r1.location = r2.location 
 join a_location l on r1.location = l.location_id 
 where l.type = 'Store'
+	and (r2.yearly_rev - r1.yearly_rev) > 0
 order by r2.yearly_rev - r1.yearly_rev desc
 limit 10;
 
