@@ -178,12 +178,12 @@ order by sum(r.price) desc;
 
 -- 1. Banana Republic plans to increase their production and wants to find out which department is 
 -- 	  making the most amount in sales. Rank all departments by the total revenue. (repeat)
-select p.department, sum(r.price) as "Revenue"
+select p.department, sum(r.price * r.quantity) as "Revenue"
 from a_product p 
 join a_purchase r on p.product_id = r.product_id
 where p.brand = 'Banana Republic'
 group by p.department
-order by sum(r.price) desc;
+order by "Revenue" desc;
 
 -- 2. To get an insight on the popularity of all products sold, what were the top 10 most-purchased
 -- 	  items in 2022? (repeat)
