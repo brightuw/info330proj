@@ -119,7 +119,7 @@ from location_max_avg m
 join a_location l on m.location = l.location_id
 group by l.location_id, l.street_address, l.city, l.state_province, l.country, m.avg;
 
--- 3. What were the top 10 store locations that made the greatest year-on-year improvement in revenue from 2021 to 2022? 
+-- 3. What were the top 5 store locations that made the greatest year-on-year improvement in revenue from 2021 to 2022? 
 WITH transaction_totals as (
 	select x.transaction_id, x.location, x.date_time, sum(p.price * p.quantity) as total_cost
 	from a_purchase p
@@ -145,7 +145,7 @@ join a_location l on r1.location = l.location_id
 where l.type = 'Store'
 	and (r2.yearly_rev - r1.yearly_rev) > 0
 order by r2.yearly_rev - r1.yearly_rev desc
-limit 10;
+limit 5;
 
 -- 4. Customer searching for women's items under $50 and sorting from least to most expensive.
 select p.product_name as "Item name", p.brand as "Brand", r.price as Price, l.street_address as "Store", l.city as "City"
@@ -196,7 +196,7 @@ group by p.product_id, r.product_name
 order by count(p.product_id) desc
 limit 10;
 
--- 3. What were the top 10 store locations that made the greatest year-on-year improvement 
+-- 3. What were the top 5 store locations that made the greatest year-on-year improvement 
 --    in revenue from 2021 to 2022? (repeat)
 WITH transaction_totals as (
 	select x.transaction_id, x.location, x.date_time, sum(p.price * p.quantity) as total_cost
@@ -223,5 +223,5 @@ join a_location l on r1.location = l.location_id
 where l.type = 'Store'
 	and (r2.yearly_rev - r1.yearly_rev) > 0
 order by r2.yearly_rev - r1.yearly_rev desc
-limit 10;
+limit 5;
 
