@@ -98,7 +98,7 @@ group by p.product_id, r.product_name
 order by count(p.product_id) desc
 limit 10;
 
--- 2. Which location has the highest average number of transactions per month? 
+-- 2. Which store location has the highest average number of transactions per month? 
 WITH all_transactions_per_month as (
 	select t.location, extract('month' from t.date_time), extract('year' from t.date_time), count(*) 
 	from a_transaction t
@@ -117,6 +117,7 @@ location_max_avg as (
 select l.location_id, l.street_address, l.city, l.state_province, l.country, m.avg as avg_transactions_per_month
 from location_max_avg m
 join a_location l on m.location = l.location_id
+where l.type = 'Store'
 group by l.location_id, l.street_address, l.city, l.state_province, l.country, m.avg;
 
 -- 3. What were the top 5 store locations that made the greatest year-on-year improvement in revenue from 2021 to 2022? 
