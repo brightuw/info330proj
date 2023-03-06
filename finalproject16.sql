@@ -119,7 +119,7 @@ from location_max_avg m
 join a_location l on m.location = l.location_id
 group by l.location_id, l.street_address, l.city, l.state_province, l.country, m.avg;
 
--- 3.What were the top 10 store locations that made the greatest year-on-year improvement in revenue from 2021 to 2022? 
+-- 3. What were the top 10 store locations that made the greatest year-on-year improvement in revenue from 2021 to 2022? 
 WITH transaction_totals as (
 	select x.transaction_id, x.location, x.date_time, sum(p.price * p.quantity) as total_cost
 	from a_purchase p
@@ -142,11 +142,11 @@ select l.location_id, l.street_address, l.city, l.state_province, l.country, r1.
 from location_rev_2021 r1
 join location_rev_2022 r2 on r1.location = r2.location 
 join a_location l on r1.location = l.location_id 
+where l.type = 'Store'
 order by r2.yearly_rev - r1.yearly_rev desc
 limit 10;
 
-
--- 4. Customer searching for womens items under $50 and sorting from least to most expensive.
+-- 4. Customer searching for women's items under $50 and sorting from least to most expensive.
 select p.product_name as "Item name", p.brand as "Brand", r.price as Price, l.street_address as "Store", l.city as "City"
 from a_product p
 join a_purchase r on p.product_id = r.product_id
@@ -154,7 +154,6 @@ join a_transaction t on r.transaction_id = t.transaction_id
 join a_location l on t.location = l.location_id
 where p.department = 'Womens' and r.price < 50
 order by r.price;
-
 
 -- 5. According to company policy, all "store" employees that have been employed for over a year
 -- are obligated a raise. Find these employees names, position, ID #, and current salary.
@@ -196,4 +195,31 @@ group by p.product_id, r.product_name
 order by count(p.product_id) desc
 limit 10;
 
+-- 3. What were the top 10 store locations that made the greatest year-on-year improvement 
+--    in revenue from 2021 to 2022? (repeat)
+WITH transaction_totals as (
+	select x.transaction_id, x.location, x.date_time, sum(p.price * p.quantity) as total_cost
+	from a_purchase p
+	join a_transaction x on p.transaction_id = x.transaction_id
+	group by x.transaction_id, x.location, x.date_time
+),
+location_rev_2021 as (
+	select t.location, sum(t.total_cost) as yearly_rev
+	from transaction_totals t
+	where extract('year' from t.date_time) = 2021
+	group by t.location
+),
+location_rev_2022 as (
+	select t.location, sum(t.total_cost) as yearly_rev
+	from transaction_totals t
+	where extract('year' from t.date_time) = 2022
+	group by t.location
+)
+select l.location_id, l.street_address, l.city, l.state_province, l.country, r1.yearly_rev as rev_2021, r2.yearly_rev as rev_2022, r2.yearly_rev - r1.yearly_rev as change_in_rev
+from location_rev_2021 r1
+join location_rev_2022 r2 on r1.location = r2.location 
+join a_location l on r1.location = l.location_id 
+where l.type = 'Store'
+order by r2.yearly_rev - r1.yearly_rev desc
+limit 10;
 
