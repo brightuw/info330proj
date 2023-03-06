@@ -174,6 +174,22 @@ where p.brand = 'Banana Republic'
 group by p.department
 order by "Revenue" desc;
 
+-- 7. What is the name and price of the most expensive item?
+select p.product_id, p.product_name, r.price
+from a_product p
+join a_purchase r on p.product_id = r.product_id
+group by p.product_name
+order by "price" desc
+limit 1;
+
+-- 8. What is the hour of the day with the most purchases?
+select r.hours, count(p.product_id) as num_purchases
+from a_product p
+join a_product r on p.product_id = r.product_id
+join a_transaction t on p.transaction_id = t.transaction_id
+group by r.hours
+order by "num_purchases" desc
+limit 1;
 
 -- Q3. Demo Queries with Results:
 
@@ -226,3 +242,11 @@ where l.type = 'Store'
 order by r2.yearly_rev - r1.yearly_rev desc
 limit 5;
 
+-- 4. Customer searching for womens items under $50 and sorting from least to most expensive. (repeat)
+select p.product_name as "Item name", p.brand as "Brand", r.price as Price, l.street_address as "Store", l.city as "City"
+from a_product p
+join a_purchase r on p.product_id = r.product_id
+join a_transaction t on r.transaction_id = t.transaction_id
+join a_location l on t.location = l.location_id
+where p.department = 'Womens' and r.price < 50
+order by r.price;
