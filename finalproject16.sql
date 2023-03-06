@@ -153,7 +153,7 @@ ORDER BY r2.yearly_rev - r1.yearly_rev DESC
 LIMIT 10;
 
 
--- 4. Customor searching for womens clothes under $50, from least expensive to most.
+-- 4. Customer searching for womens items under $50 and sorting from least to most expensive.
 select p.product_name as "Item name", p.brand as "Brand", r.price as Price, l.street_address as "Store", l.city as "City"
 from a_product p
 join a_purchase r on p.product_id = r.product_id
@@ -181,5 +181,14 @@ group by p.department
 order by sum(r.price) desc;
 
 
+-- Q3. Demo Queries with Results:
 
+-- 1. Banana Republic plans to increase their production and wants to find out which department is 
+-- 	  making the most amount in sales. Rank all departments by the total revenue. (repeat)
+select p.department, sum(r.price) as "Revenue"
+from a_product p 
+join a_purchase r on p.product_id = r.product_id
+where p.brand = 'Banana Republic'
+group by p.department
+order by sum(r.price) desc;
 
