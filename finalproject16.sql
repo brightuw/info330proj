@@ -174,7 +174,7 @@ group by p.department
 order by "Revenue" desc;
 
 -- 7. What is the name and price of the most expensive item?
-select p.product_id, p.product_name, (r.price)
+select p.product_id, p.product_name, r.price
 from a_product p
 join a_purchase r on p.product_id = r.product_id
 order by r.price desc
