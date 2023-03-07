@@ -205,9 +205,9 @@ order by "Revenue" desc;
 
 -- Department Revenue:
 
--- "Womens"	  82.97
--- "Kids"	  78.97
--- "Mens"	  67.98
+-- "Womens"	  242.95
+-- "Kids"	  98.96
+-- "Mens"	  87.97
 
 -- 2. To get an insight on the popularity of all products sold, what were the top 10 most-purchased
 -- 	  items in 2022? (repeat)
@@ -224,16 +224,16 @@ limit 10;
 
 -- product_id   product_name                    num_purchases
 
--- 16	        "Color Blossom BB Star Pendant"	            2
--- 9	        "Solid Ruffle Trim Belted Wrap Dress"	    2
--- 1	        "Tee Shirt"	                                2
--- 6	        "Court Classics"	                        1
--- 10	        "EMERY ROSE Solid Ruffle Hem Smock Dress"	1
--- 11	        "Waffle Knit Draped Dress"	                1
--- 12	        "BIC Earrings"	                            1
--- 13	        "Tina Shoes"		        	            1
--- 14	        "Stylish Head Scarf"		                1
--- 18	        "Essential Fleece Joggers"		            1
+-- 18			"Essential Fleece Joggers"					3
+-- 16			"Color Blossom BB Star Pendant"				3
+-- 1			"Tee Shirt"									3
+-- 20			"V-Neck Sweater"							2
+-- 2			"Tee Shirt"									2
+-- 9			"Solid Ruffle Trim Belted Wrap Dress"		2
+-- 11			"Waffle Knit Draped Dress"					2
+-- 12			"BIC Earrings"								2
+-- 14			"Stylish Head Scarf"						2
+-- 17			"Low-Fi Hi-Tek Nuptse Jacket"				2
 
 -- 3. What were the top 5 store locations that made the greatest year-on-year improvement 
 --    in revenue from 2021 to 2022? (repeat)
@@ -268,9 +268,11 @@ limit 5;
 
 -- location_id, street_address, city, state_province, country, rev_2021, rev_2022, change_in_rev
 
--- 9	"1111 Robson St"	"Vancouver"	"BC"	"CA"	2900	5840	2940
+-- 9	"1111 Robson St"	"Vancouver"	"BC"	"CA"	2900	5944.98	3044.98
 -- 11	"2855 Stevens Creek Blvd"	"Santa Clara"	"CA"	"USA"	925.98	3084.96	2158.98
 -- 1	"7171 Belred Rd"	"Bellevue"	"WA"	"USA"	74.99	952.95	877.96
+-- 8	"5500 112th Blvd NE"	"Dallas"	"TX"	"USA"	49.98	319.99	270.01
+-- 13	"260 Yonge Street"	"Toronto"	"ON"	"CA"	144.96	329.98	185.02
 
 -- 4. Customer searching for womens items under $50 and sorting from least to most expensive. (repeat)
 select p.product_name as "Item name", p.brand as "Brand", r.price as Price, l.street_address as "Store", l.city as "City"
