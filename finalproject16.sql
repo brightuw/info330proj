@@ -10,17 +10,8 @@ CREATE TABLE a_brand (
 	country varchar(100)
 );
 
-INSERT INTO a_brand(brand_name, country) (
-	VALUES('Banana Republic',
-	'United States')
-);
-
 CREATE TABLE a_department (
 	department varchar(200) PRIMARY KEY
-);
-
-INSERT INTO a_department(department) (
-	VALUES('Womens')
 );
 
 CREATE TABLE a_product (
@@ -32,23 +23,10 @@ CREATE TABLE a_product (
 	product_id serial PRIMARY KEY
 );
 
-INSERT INTO a_product(product_name, brand, department, category, subcategory, product_id) (
-	VALUES ('BIC Earrings',
-	'Banana Republic',
-	'Womens',
-	'Accessories',
-	'Earrings',
-	12)
-);
-
 CREATE TABLE a_product_tags (
 	product_id int REFERENCES a_product(product_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	tag varchar(100),
 	PRIMARY KEY (product_id, tag)
-);
-
-INSERT INTO a_product_tags(product_id, tag) (
-	VALUES(12, 'Earrings')
 );
 
 CREATE TABLE a_customer (
@@ -64,19 +42,6 @@ CREATE TABLE a_customer (
 	customer_id serial PRIMARY KEY
 );
 
-INSERT INTO a_customer(phone_number, first_name, last_name, email, street_address, city, state_province, country, postal_code, customer_id) (
-	VALUES ('4250411290', 
-	'Lyol',
-	'Candies',
-	'gamerboyxd@gmail.com',
-	'444 Trenton Hills Ave NE',
-	'Renton',
-	'WA',
-	'USA',
-	'98120',
-	22)
-);
-
 CREATE TABLE a_location (
 	type varchar(200),
 	street_address varchar(200),
@@ -87,29 +52,11 @@ CREATE TABLE a_location (
 	location_id serial PRIMARY KEY
 );
 
-
-INSERT INTO a_location(type, street_address, city, state_province, country, still_open, location_id) (
-	VALUES ('Store', 
-	'7171 Belred Rd',
-	'Bellevue',
-	'WA',
-	'USA',
-	true,
-	4)
-);
-
 CREATE TABLE a_transaction (
 	transaction_id serial PRIMARY KEY,
 	customer int REFERENCES a_customer(customer_id) ON DELETE SET DEFAULT,
 	location int REFERENCES a_location(location_id) ON DELETE RESTRICT,
 	date_time timestamp
-);
-
-INSERT INTO a_transaction(transaction_id, customer, location, date_time) (
-	VALUES (1,
-	0,
-	4,
-	'2022-02-11 04:08:02')
 );
 
 ALTER TABLE a_transaction ALTER COLUMN customer SET DEFAULT 0;
@@ -123,14 +70,6 @@ CREATE TABLE a_purchase (
 	PRIMARY KEY (transaction_id, product_id)
 );
 
-INSERT INTO a_purchase(transaction_id, product_id, price, size, quantity) (
-	VALUES(1,
-	12,
-	3.99,
-	4,
-	1)
-);
-
 CREATE TABLE a_employee (
 	first_name varchar(100),
 	last_name varchar(100),
@@ -139,25 +78,11 @@ CREATE TABLE a_employee (
 	employee_id serial PRIMARY KEY
 );
 
-INSERT INTO a_employee(first_name, last_name, salary, date_joined, employee_id) (
-	VALUES ('Trisha', 
-	'Paytas',
-	'43000',
-	'2020-11-25',
-	1)
-);
-
 CREATE TABLE a_works_at (
 	employee_id int REFERENCES a_employee(employee_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	position varchar(200),
 	location int REFERENCES a_location(location_id) ON DELETE CASCADE ON UPDATE CASCADE,
 	PRIMARY KEY (employee_id, position, location)
-);
-
-INSERT INTO a_works_at(employee_id, position, location) (
-	VALUES(1,
-	'Sales Associate',
-	4)
 );
 
 -- Q2. 10 SQL Statements
