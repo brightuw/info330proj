@@ -174,21 +174,21 @@ group by p.department
 order by "Revenue" desc;
 
 -- 7. What is the name and price of the most expensive item?
-select p.product_id, p.product_name, r.price
+select p.product_id, p.product_name, (r.price / r.quantity) as price
 from a_product p
 join a_purchase r on p.product_id = r.product_id
-group by p.product_name
-order by "price" desc
+order by price desc
 limit 1;
 
 -- 8. What is the hour of the day with the most purchases?
-select r.hours, count(p.product_id) as num_purchases
+select (extract('hour' from t.date_time)) as hour, count(p.product_id) as num_purchases
 from a_product p
-join a_product r on p.product_id = r.product_id
-join a_transaction t on p.transaction_id = t.transaction_id
-group by r.hours
+join a_purchase r on p.product_id = r.product_id
+join a_transaction t on r.transaction_id = t.transaction_id
+group by hour
 order by "num_purchases" desc
 limit 1;
+
 
 -- Q3. Demo Queries with Results:
 
