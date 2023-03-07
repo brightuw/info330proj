@@ -89,13 +89,13 @@ CREATE TABLE a_works_at (
 -- Q2. 10 SQL Statements
 
 -- 1. In 2022, what were the top 10 products that were purchased the most often?
-select p.product_id, r.product_name, count(p.product_id) as num_purchases
+select p.product_id, r.product_name, sum(p.quantity) as num_purchases
 from a_purchase p
 join a_product r on p.product_id = r.product_id
 join a_transaction t on p.transaction_id = t.transaction_id
 where extract('year' from t.date_time) = 2022
 group by p.product_id, r.product_name 
-order by count(p.product_id) desc
+order by sum(p.quantity) desc
 limit 10;
 
 -- 2. Which store location has the highest average number of transactions per month? 
@@ -212,13 +212,13 @@ order by "Revenue" desc;
 
 -- 2. To get an insight on the popularity of all products sold, what were the top 10 most-purchased
 -- 	  items in 2022? (repeat)
-select p.product_id, r.product_name, count(p.product_id) as num_purchases
+select p.product_id, r.product_name, sum(p.quantity) as num_purchases
 from a_purchase p
 join a_product r on p.product_id = r.product_id
 join a_transaction t on p.transaction_id = t.transaction_id
 where extract('year' from t.date_time) = 2022
 group by p.product_id, r.product_name 
-order by count(p.product_id) desc
+order by sum(p.quantity) desc
 limit 10;
 
 -- Results
