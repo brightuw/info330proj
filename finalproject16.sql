@@ -189,6 +189,48 @@ group by hour
 order by "num_purchases" desc
 limit 1;
 
+-- 9. Which brand has the highest sold products? (Corporate Executive, Brand Managers, Store Managers)
+SELECT pr.brand, SUM(pu.quantity)
+FROM a_product pr, a_purchase pu
+WHERE pr.product_id = pu.product_id
+GROUP BY pr.brand
+ORDER BY SUM(pu.quantity) DESC
+LIMIT 1;
+
+
+-- 10. What are the 5 cheapest (average price) L-size t-shirts from brands that are from the US? (Customers)
+SELECT pr.product_name, AVG(pu.price)
+FROM a_product pr, a_brand b, a_purchase pu
+WHERE pr.subcategory = 'T-Shirt' AND pr.brand = b.brand_name
+AND b.country = 'USA'AND pr.product_id = pu.product_id
+AND (pu.size = 'L' OR pu.size = 'Large')
+GROUP BY pr.product_id
+ORDER BY AVG(pu.price)
+LIMIT 5;
+
+
+-- 11. What are the top 10 products with the highest average price increases from 2021 to 2022? (Corporate Executive, Retail Analysts)
+WITH price_avgs_22 as (SELECT pr.product_name, 
+ AVG(pu.price) as avg_price
+	FROM a_product pr, a_purchase pu, a_transaction t
+	WHERE EXTRACT('year' FROM t.date_time) = '2022' 
+AND t.transaction_id = pu.transaction_id
+	AND pu.product_id = pr.product_id 
+	GROUP BY pr.product_name 
+),
+price_avgs_21 as (SELECT pr.product_name, 
+ AVG(pu.price) as avg_price
+	FROM a_product pr, a_purchase pu, a_transaction t
+	WHERE EXTRACT('year' FROM t.date_time) = '2021' 
+AND  t.transaction_id = pu.transaction_id
+	AND pu.product_id = pr.product_id 
+	GROUP BY pr.product_name
+)
+SELECT a1.product_name, a2.avg_price - a1.avg_price as price_difference
+FROM price_avgs_21 a1, price_avgs_22 a2
+ORDER BY price_difference DESC
+LIMIT 10;
+
 
 -- Q3. Demo Queries with Results:
 
@@ -297,3 +339,40 @@ order by r.price;
 -- "Stylish Head Scarf"	"Burberry"	37.99	"2855 Stevens Creek Blvd"	"Santa Clara"
 -- "Stylish Head Scarf"	"Burberry"	42.99	"Online"	
 -- "Tina Shoes"	"Chanel"	44.99	"7171 Belred Rd"	"Bellevue"
+
+-- 5. What are the top 10 products with the highest average price increases from 2021 to 2022?
+WITH price_avgs_22 as (SELECT pr.product_name, 
+ AVG(pu.price) as avg_price
+	FROM a_product pr, a_purchase pu, a_transaction t
+	WHERE EXTRACT('year' FROM t.date_time) = '2022' 
+AND t.transaction_id = pu.transaction_id
+	AND pu.product_id = pr.product_id 
+	GROUP BY pr.product_name 
+),
+price_avgs_21 as (SELECT pr.product_name, 
+ AVG(pu.price) as avg_price
+	FROM a_product pr, a_purchase pu, a_transaction t
+	WHERE EXTRACT('year' FROM t.date_time) = '2021' 
+AND  t.transaction_id = pu.transaction_id
+	AND pu.product_id = pr.product_id 
+	GROUP BY pr.product_name
+)
+SELECT a1.product_name, a2.avg_price - a1.avg_price as price_difference
+FROM price_avgs_21 a1, price_avgs_22 a2
+ORDER BY price_difference DESC
+LIMIT 10;
+
+-- Results:
+
+-- product_name, price_difference
+
+-- "Tee Shirt"	2925.0100000000000000
+--"Waffle Knit Draped Dress"	2920.0100000000000000
+--"V-Neck Sweater"	2920.0100000000000000
+--"Stylish Head Scarf"	2903.0100000000000000
+--"New Mom Skinny Jean"	2867.5100000000000000
+--"Hype Blouse"	2785.0100000000000000
+--"Web Rubber Slides"	2545.0100000000000000
+--"Zippy Wallet"	2095.0000000000000000
+--"Tee Shirt"	705.0100000000000000
+--"V-Neck Sweater"	700.0100000000000000
